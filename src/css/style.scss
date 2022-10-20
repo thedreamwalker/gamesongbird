@@ -1,0 +1,30 @@
+:root {
+--font-size: 36px;
+--padding-base: 15px;
+--field-size: 750px;
+}
+
+.game__field {
+  display: grid;
+  gap: 20px;
+  width: var(--field-size);
+  height: var(--field-size);
+  margin: 0 auto;
+  border: 2px red solid;
+}
+
+.card__item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100%;
+  background-color: orange;
+  border-radius: 5px;
+  font-size: var(--font-size);
+  color: #fff;
+}
+
+.card__item_empty {
+  background-color: #fff;
+}

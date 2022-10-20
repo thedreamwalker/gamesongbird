@@ -1,7 +1,7 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 let mode = 'development'; // По умолчанию режим development
 let target = 'web'; // в режиме разработки browserslist не используется
@@ -12,9 +12,7 @@ if (process.env.NODE_ENV === 'production') { // Режим production, если
 }
 
 const plugins = [
-  new HtmlWebpackPlugin({
-    template: './src/index.html', // Данный html будет использован как шаблон
-  }),
+  new HtmlWebpackPlugin(),
   new MiniCssExtractPlugin({
     filename: '[name].[contenthash].css', // Формат имени файла
   }),
