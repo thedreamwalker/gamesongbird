@@ -55,12 +55,25 @@ const moveCard = (event) => {
 
   allCards.forEach((card, i) => {
     
-    if (card === event.target) {
+    if (card === event.target || card === event.target.closest('.card__item')) {
       console.log(card);
-      console.log(allCards[i - rowField]);
-      console.log(allCards[i + rowField]);
-      console.log(allCards[i - 1]);
-      console.log(allCards[i + 1]);
+      if (allCards[i - rowField] && allCards[i - rowField].classList.contains('card__item_empty') ) {
+        const replacedCard = field.replaceChild(card, allCards[i - rowField]);
+        console.log('один');
+        allCards[i + 1].before(replacedCard);
+      }
+      if (allCards[i + rowField] && allCards[i + rowField].classList.contains('card__item_empty') ) {
+        const replacedCard = field.replaceChild(card, allCards[i + rowField]);
+        allCards[i - 1].after(replacedCard);
+      }
+      if (allCards[i - 1] && allCards[i - 1].classList.contains('card__item_empty') ) {
+        const replacedCard = field.replaceChild(card, allCards[i - 1]);
+        allCards[i].after(replacedCard);
+      }
+      if (allCards[i + 1] && allCards[i + 1].classList.contains('card__item_empty') ) {
+        const replacedCard = field.replaceChild(card, allCards[i + 1]);
+        allCards[i].before(replacedCard);
+      }
     }
   });
 };
