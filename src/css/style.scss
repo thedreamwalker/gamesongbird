@@ -2,6 +2,105 @@
 --font-size: 36px;
 --padding-base: 15px;
 --field-size: 750px;
+--color-primary: #ffc107;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+ul {
+  margin: 0;
+}
+
+.game__wrapper {
+  width: var(--field-size);
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.game__settings {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.game__buttons {
+  display: flex;
+  gap: 20px;
+
+  button {
+    padding: 6px 14px;
+    font-size: calc(var(--font-size) / 1.6);
+    background-color: var(--color-primary);
+    color: #fff;
+    text-transform: lowercase;
+    border: none;
+    border-radius: 5px;
+  }
+}
+
+.game__buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.area__fieldset {
+  background-color: #fff;
+  border: none;
+
+  & input[type=radio] {
+    width: 0;
+    height: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    visibility: hidden;
+}
+
+  input[type="radio"]:checked ~ label {
+    .area__label_button {
+      background-color: var(--color-primary);
+    }
+  }
+
+  label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .area__label_button {
+    display: block;
+    width: 10px;
+    height: 10px;
+    transition: 0.2s all linear;
+    background-color: #fff;
+    border: 2px var(--color-primary) solid;
+    border-radius: 50%;
+}
+
+  .area__list {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    list-style: none;
+  }
+
+  .area__label_value {
+    font-size: calc(var(--font-size) / 1.5);
+    color: var(--color-primary);
+  }
+}
+
+.game__counters {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  font-size: calc(var(--font-size) / 1.5);
 }
 
 .game__field {
@@ -9,7 +108,6 @@
   gap: 20px;
   width: var(--field-size);
   height: var(--field-size);
-  margin: 0 auto;
   border: 2px red solid;
 }
 
@@ -19,7 +117,7 @@
   align-items: center;
   width: 100%;
   min-height: 100%;
-  background-color: orange;
+  background-color: var(--color-primary);
   border-radius: 5px;
   font-size: var(--font-size);
   color: #fff;
