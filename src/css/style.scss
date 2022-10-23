@@ -121,8 +121,28 @@ ul {
   border-radius: 5px;
   font-size: var(--font-size);
   color: #fff;
+  cursor: pointer;
 }
 
 .card__item_empty {
   background-color: #fff;
+}
+
+.game__finish {
+  position: fixed;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 40%;
+  height: max-content;
+  padding: 30px;
+  background-color: #fff;
+  font-size: 1.7rem;
+  text-align: center;
+  border: 2px var(--color-primary) solid;
+  border-radius: 5px;
+  box-shadow: 1px 0px 23px var(--color-primary);
+  transition: .5s;
 }

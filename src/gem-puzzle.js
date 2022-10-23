@@ -2,6 +2,9 @@ let rowField = 4;
 let isStarted = false;
 const area = () => rowField * rowField;
 let finalPosition = '';
+let seconds = 0;
+let isTimerWork = false;
+let timerId;
 
 class Card {
   constructor(number, parent, ...classes) {
@@ -111,6 +114,37 @@ const startGame = () => {
   setFild(area());
 };
 
+const shuffle = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+  let j = Math.floor(Math.random() * (i + 1)); // случайный индекс от 0 до i
+  [array[i], array[j]] = [array[j], array[i]];
+}
+};
+
+const checkSolvability = (array) => {
+  const result = array.reduce((acc, elem, index) => {
+    let counter = 0;
+    for (let i = index + 1; i <= array.length; i++) {
+      if (elem > array[i] && array[i] !== 0) {
+        counter += 1;
+      }
+    }
+    return acc + counter;
+  }, 0);
+  
+
+  const rowEmptyCard = (arr) => {
+    const index = arr.indexOf(0) + 1;
+    return Math.floor(index / rowField);
+  };
+
+  if (rowField % 2 === 0) {
+    return (result + rowEmptyCard(array)) % 2 === 0 ? false : true;
+  } else {
+    return result % 2 === 0 ? true : false;
+  }
+};
+
 const setFild = (number) => {
 
   finalPosition = '';
@@ -127,16 +161,36 @@ const setFild = (number) => {
   element.classList.add('game__field');
   if (number === 9) {element.style.gridTemplateColumns = '1fr 1fr 1fr';}
   if (number === 16) {element.style.gridTemplateColumns = '1fr 1fr 1fr 1fr';}
+  if (number === 25) {element.style.gridTemplateColumns = '1fr 1fr 1fr 1fr 1fr';}
+  if (number === 36) {element.style.gridTemplateColumns = '1fr 1fr 1fr 1fr 1fr 1fr';}
+  if (number === 49) {element.style.gridTemplateColumns = '1fr 1fr 1fr 1fr 1fr 1fr 1fr';}
+  if (number === 64) {element.style.gridTemplateColumns = '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr';}
   document.querySelector('.game__wrapper').append(element);
 
-  // надо все-таки делать массив, который случайно генерируется, да?
+  let startArray = [];
+
   for (let i = 0; i < number; i++) {
-    if (i === 0) {
-      new Card('', element, 'card__item', 'card__item_empty').render();
-    } else {
-      new Card(i, element).render();
-    }
+    startArray.push(i);
   }
+
+  shuffle(startArray);
+
+  const arrayCheck = (arr) => {
+    if (checkSolvability(arr)) {
+      arr.forEach(el => {
+        if (el === 0) {
+          new Card('', element, 'card__item', 'card__item_empty').render();
+        } else {
+          new Card(el, element).render();
+        }
+      });
+    } else {
+      shuffle(startArray);
+      arrayCheck(startArray);
+    }
+  };
+
+  arrayCheck(startArray);
 };
 
 startGame();
@@ -144,9 +198,23 @@ startGame();
 let field = document.querySelector('.game__field');
 const buttonNewGame = document.querySelector('.game__buttons_new');
 let moves = document.querySelector('.game__counter_moves span');
+let time = document.querySelector('.game__counter_time span');
 
 const setMoves = () => {
   moves.innerHTML = Number(moves.innerHTML) + 1;
+};
+
+const changeTimer = () => {
+  seconds += 1;
+  seconds >= 60 ? time.innerHTML = 
+  `${Math.floor(seconds / 60)} min ${seconds % 60} sec` : time.innerHTML = 
+  `${seconds} sec`
+  ;
+};
+
+const startTimer = () => {
+  isTimerWork = true;
+  timerId = setInterval(changeTimer, 1000);
 };
 
 const moveCard = (event) => {
@@ -162,21 +230,33 @@ const moveCard = (event) => {
         const replacedCard = field.replaceChild(card, allCards[i - rowField]);
         allCards[i + 1] ? allCards[i + 1].before(replacedCard) : field.append(replacedCard);
         setMoves();
+        if (!isTimerWork) {
+          startTimer();
+        }
       }
       if (allCards[i + rowField] && allCards[i + rowField].classList.contains('card__item_empty') ) {
         const replacedCard = field.replaceChild(card, allCards[i + rowField]);
         allCards[i - 1] ? allCards[i - 1].after(replacedCard) : field.prepend(replacedCard);
         setMoves();
+        if (!isTimerWork) {
+          startTimer();
+        }
       }
       if (allCards[i - 1] && allCards[i - 1].classList.contains('card__item_empty') ) {
         const replacedCard = field.replaceChild(card, allCards[i - 1]);
         allCards[i].after(replacedCard);
         setMoves();
+        if (!isTimerWork) {
+          startTimer();
+        }
       }
       if (allCards[i + 1] && allCards[i + 1].classList.contains('card__item_empty') ) {
         const replacedCard = field.replaceChild(card, allCards[i + 1]);
         allCards[i].before(replacedCard);
         setMoves();
+        if (!isTimerWork) {
+          startTimer();
+        }
       }
     }
   });
@@ -188,12 +268,27 @@ const moveCard = (event) => {
   });
 
   if (checkPosition === finalPosition) {
+    clearInterval(timerId);
+    isTimerWork = false;
     console.log('Поздравляю, ты победил!');
+
+    const div = document.createElement('div');
+    div.classList.add('game__finish');
+    div.innerHTML = 
+    `Hooray! You solved the puzzle in ${Math.floor(seconds / 60)}:${seconds % 60} and ${moves.innerHTML} moves!`;
+    document.querySelector('.game__wrapper').append(div);
+
+    // потом это обнови-удали. подложку стоит тоже сделать?
   }
 };
 
 const startNewGame = () => {
   document.querySelector('.game__field').remove();
+  seconds = 0;
+  moves.innerHTML = 0;
+  time.innerHTML = 0;
+  isTimerWork = false;
+  clearInterval(timerId);
   setFild(area());
   field = document.querySelector('.game__field');
   field.addEventListener('click', moveCard);
@@ -211,6 +306,58 @@ allFields.forEach(element => {
   });
 });
 
+/* drag-and-drop */
+
+const dragAndDrop = (event) => {
+
+  const allCards = field.querySelectorAll('.card__item');
+  console.log(event.target);
+  console.log('сработало');
+
+  allCards.forEach((card, i) => {
+    
+    if (card === event.target || card === event.target.closest('.card__item')) {
+      card.onmousedown = function(event) {
+
+        let shiftX = event.clientX - card.getBoundingClientRect().left;
+        let shiftY = event.clientY - card.getBoundingClientRect().top;
+      
+        card.style.position = 'absolute';
+        card.style.zIndex = 1000;
+        document.body.append(card);
+      
+        moveAt(event.pageX, event.pageY);
+      
+        // moves the ball at (pageX, pageY) coordinates
+        // taking initial shifts into account
+        function moveAt(pageX, pageY) {
+          card.style.left = pageX - shiftX + 'px';
+          card.style.top = pageY - shiftY + 'px';
+        }
+      
+        function onMouseMove(event) {
+          moveAt(event.pageX, event.pageY);
+        }
+      
+        // move the ball on mousemove
+        document.addEventListener('mousemove', onMouseMove);
+      
+        // drop the ball, remove unneeded handlers
+        card.onmouseup = function() {
+          document.removeEventListener('mousemove', onMouseMove);
+          card.onmouseup = null;
+        };
+      
+      };
+      
+      card.ondragstart = function() {
+        return false;
+      };
+    }
+  });
+};
+
+//field.addEventListener('mousedown', dragAndDrop);
 field.addEventListener('click', moveCard);
 buttonNewGame.addEventListener('click', startNewGame);
 
