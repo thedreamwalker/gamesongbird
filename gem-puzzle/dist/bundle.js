@@ -505,41 +505,14 @@ const dragAndDrop = event => {
   console.log('сработало');
   allCards.forEach((card, i) => {
     if (card === event.target || card === event.target.closest('.card__item')) {
-      card.onmousedown = function (event) {
-        let shiftX = event.clientX - card.getBoundingClientRect().left;
-        let shiftY = event.clientY - card.getBoundingClientRect().top;
-        card.style.position = 'absolute';
-        card.style.zIndex = 1000;
-        document.body.append(card);
-        moveAt(event.pageX, event.pageY);
-
-        // moves the ball at (pageX, pageY) coordinates
-        // taking initial shifts into account
-        function moveAt(pageX, pageY) {
-          card.style.left = pageX - shiftX + 'px';
-          card.style.top = pageY - shiftY + 'px';
-        }
-        function onMouseMove(event) {
-          moveAt(event.pageX, event.pageY);
-        }
-
-        // move the ball on mousemove
-        document.addEventListener('mousemove', onMouseMove);
-
-        // drop the ball, remove unneeded handlers
-        card.onmouseup = function () {
-          document.removeEventListener('mousemove', onMouseMove);
-          card.onmouseup = null;
-        };
-      };
-      card.ondragstart = function () {
-        return false;
-      };
+      card.draggable = true;
+      card.addEventListener('dragstart', e => {
+        console.log('поехали');
+      });
     }
   });
 };
-
-//field.addEventListener('mousedown', dragAndDrop);
+field.addEventListener('mousedown', dragAndDrop);
 field.addEventListener('click', moveCard);
 buttonNewGame.addEventListener('click', startNewGame);
 buttonSaveGame.addEventListener('click', saveGame);
@@ -547,10 +520,6 @@ buttonLoadGame.addEventListener('click', loadGame);
 buttonResults.addEventListener('click', showResults);
 window.addEventListener('load', getResultsLocalStorage);
 window.addEventListener('beforeunload', setResultsLocalStorage);
-
-// Экспортируем эти функции,
-// чтобы воспользоваться ими в другом месте:
-// export { setFild, moveCard };
 
 /***/ }),
 
