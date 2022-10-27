@@ -331,14 +331,21 @@ template {
     --font-size: 66px;
   }
 }
+* {
+  box-sizing: border-box;
+}
+
 body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 ul {
   margin: 0;
+  padding: 0;
 }
 
 .overlay {
@@ -358,8 +365,10 @@ ul {
 }
 
 .game__wrapper {
-  width: 750px;
-  width: var(--field-size);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
   margin: 0 auto;
   padding: 20px;
 }
@@ -445,6 +454,7 @@ ul {
 .area__fieldset .area__list {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 20px;
   list-style: none;
 }
@@ -540,6 +550,20 @@ ul {
   height: 750px;
   height: var(--field-size);
 }
+@media (max-width: 750px) {
+  .game__field {
+    gap: 10px;
+    width: 540px;
+    height: 540px;
+  }
+}
+@media (max-width: 550px) {
+  .game__field {
+    gap: 5px;
+    width: 310px;
+    height: 310px;
+  }
+}
 
 .card__item {
   position: relative;
@@ -554,7 +578,6 @@ ul {
   background-color: var(--color-primary);
   border-radius: 5px;
   font-size: 36px;
-  font-size: var(--font-size);
   color: #fff;
   cursor: pointer;
   transition: 0.6s ease-in-out;
@@ -647,4 +670,4 @@ ul {
   animation: up 0.6s;
 }
 
-/*# sourceMappingURL=main.d7468a62f580409c42f3.css.map*/
+/*# sourceMappingURL=main.90e91a243175827fff34.css.map*/
