@@ -1,0 +1,77 @@
+:root {
+--font-size: 36px;
+--color-section: rgba(255, 255, 255, 0.4);
+}
+
+@media (max-width: 999.98px) {
+  :root {
+    --font-size: 46px;
+  }
+}
+@media (max-width: 640px) {
+  :root {
+    --font-size: 66px;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-image: linear-gradient(
+  145deg,
+  hsl(188deg 100% 97%) 0%,
+  hsl(158deg 68% 96%) 9%,
+  hsl(124deg 60% 96%) 20%,
+  hsl(100deg 64% 95%) 32%,
+  hsl(76deg 58% 93%) 46%,
+  hsl(58deg 57% 92%) 59%,
+  hsl(47deg 76% 92%) 72%,
+  hsl(37deg 54% 93%) 83%,
+  hsl(2deg 26% 93%) 93%,
+  hsl(285deg 30% 92%) 100%
+);
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.game__wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.question {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 20px;
+  background-color: var(--color-section);
+  border-radius: 40px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+
+  .question__img {
+    width: 40%;
+  }
+
+  .question__info {
+    width: 60%;
+  }
+}
