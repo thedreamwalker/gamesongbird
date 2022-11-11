@@ -1,6 +1,24 @@
+@font-face {
+  font-family: 'Weekly';
+  font-style: normal;
+  font-weight: normal;
+  src:
+    url('../assets/fonts/Merriweather-Regular.ttf') format('truetype'),
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: normal;
+  font-weight: bold;
+  src:
+    url('../assets/fonts/Merriweather-Bold.ttf') format('truetype');
+}
+
 :root {
 --font-size: 36px;
---color-section: rgba(255, 255, 255, 0.4);
+--color-section: rgba(255, 255, 255, 0.5);
+--color-text: #474343;
+--color-accent: #f3a336;
 }
 
 @media (max-width: 999.98px) {
@@ -34,6 +52,7 @@ body {
   hsl(2deg 26% 93%) 93%,
   hsl(285deg 30% 92%) 100%
 );
+  font-family: 'Merriweather', serif;
 }
 
 ul {
@@ -66,12 +85,56 @@ ul {
   background-color: var(--color-section);
   border-radius: 40px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
 
-  .question__img {
-    width: 40%;
+.answers {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+
+}
+
+.button {
+  min-width: 80px;
+  padding: 8px;
+  font-family: 'Merriweather';
+  font-size: 16px;
+  color: var(--color-text);
+  font-weight: bold;
+  text-transform: lowercase;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 17px;
+  cursor: pointer;
+  transition: all 0.5s;
+
+  &:hover {
+    transition: all 0.5s;
+  }
+}
+
+.answers__item {
+  background-color: transparent;
+  
+  &:hover {
+    background-color: #fff;
+    border: none;
   }
 
-  .question__info {
-    width: 60%;
+  &.right {
+    background-color: #fff;
+    color: var(--color-accent);
+    border: none;
+  }
+}
+
+.button_next {
+  width: 100%;
+  background-color: var(--color-section);
+  cursor: not-allowed;
+
+  &.enable {
+    background-color: #fff;
+    border: none;
+    cursor: pointer;
   }
 }
