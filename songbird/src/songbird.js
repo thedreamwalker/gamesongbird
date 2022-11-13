@@ -1,8 +1,9 @@
 import birdsData from './birds';
 
 let allQuestion = [];
-const currentQuestion = 0;
+let currentQuestion = 0;
 let currentAnswer = 0;
+let audioQuestion;
 
 class Question {
   constructor(array, audio, parent) {
@@ -11,21 +12,22 @@ class Question {
     this.parent = parent;
   }
 
-  render() {
+  async render() {
     const question = document.createElement('div');
     question.classList.add('question');
+    
     question.innerHTML += `
+    <div class="question__title">
+      <p>Кто это?</p>
+      <p class="question__name">***</p>
+    </div>
     <div class="question__img">
           <img src="../src/assets/img/deafaltbird.jpg">
-    </div>
-    <div class="question__info">
-      <p class="question__name">Кто это?
-      </p>
-      <audio class="question__audio"
-      src="${this.audio}" controls></audio>
     </div>`;
 
     this.parent.append(question);
+
+    new Player(this.audio, question).render('Question');
 
     const answers = document.createElement('div');
     answers.classList.add('answers');
@@ -43,29 +45,116 @@ class Question {
 }
 
 class Item {
-  constructor(find, array) {
+  constructor(selected, array) {
     this.array = array;
-    this.find = find;
+    this.selected = selected;
   }
 
-  render() {
+  async render() {
     const item = document.querySelector('.item');
     this.array.forEach(bird => {
-      if (bird.name === this.find) {
+      if (bird.name === this.selected) {
         item.innerHTML = `
         <div class="item__main">
           <div class="item__info">
             <p class="item__name">${bird.name} | ${bird.species}
             </p>
-            <audio class="item__audio" src="${bird.audio}" controls></audio>
           </div>
         <div class="item__img">
           <img src="${bird.image}">
         </div>
       </div>
-      <div class="info__text"><p>${bird.description}</p></div>`;
+      <div class="item__text"><p>${bird.description}</p></div>`;
+
+    const player = document.createElement('div');
+    player.classList.add('player');
+
+    new Player(bird.audio, player).render();
+    document.querySelector('.item__info').append(player);
       }
     });
+  }
+}
+
+class Player {
+  constructor(url, parent) {
+    this.url = url;
+    this.parent = parent;
+  }
+
+  async render(question) {
+    const audio = await new Audio(this.url);
+    audio.volume = 0.75;
+    this.parent.append(audio);
+
+    const div = document.createElement('div');
+    if (question) {
+      div.classList.add('player');
+      div.innerHTML = `
+      <audio class="player__audio" preload='metadata'
+        src="${this.url}" type="audio/mpeg"></audio>
+      <div class="player__progress">
+        <div class="player__progressbar"><button class="player__progress-toggle" aria-label="Текущее время"></button></div>
+      </div>
+      <div class="player__time">
+        <div class="player__time_current">0:00</div>
+        <div class="player__time_duration"></div>
+      </div>
+      <button class="control__volume"><img src="../src/assets/svg/volume.svg" alt="Регулировка громкости">
+        <div class="control__volume_progress">
+          <div class="control__volume_progressbar"></div>
+        </div>
+      </button>`;
+    } else {
+      div.classList.add('player__wrapper');
+      div.innerHTML = `
+      <div class="player__track">
+        <div class="player__progress">
+          <div class="player__progressbar"><button class="player__progress-toggle" aria-label="Текущее время"></button></div>
+        </div>
+        <div class="player__time">
+          <div class="player__time_current">0:00</div>
+          <div class="player__time_duration"></div>
+        </div>
+        <button class="control__volume"><img src="../src/assets/svg/volume.svg" alt="Регулировка громкости">
+        <div class="control__volume_progress">
+          <div class="control__volume_progressbar"></div>
+        </div>
+        </button>
+      </div>`;
+    }
+
+    this.parent.append(div);
+
+    const audioButton = document.createElement('button');
+    audioButton.classList.add('control__switcher', 'control__switcher_play');
+    audioButton.addEventListener('click', event => {
+      playAudio(event, audio, div);
+    });
+    div.prepend(audioButton);
+
+    // change volume 
+    div.querySelector('.control__volume_progress').addEventListener('click', e => {
+      const sliderWidth = window.getComputedStyle(div.querySelector('.control__volume_progress')).width;
+      const newVolume = e.offsetX / parseInt(sliderWidth);
+      audio.volume = newVolume;
+      div.querySelector(".control__volume_progressbar").style.width = newVolume * 100 + '%';
+    }, false);
+  
+    // set duration
+    audio.onloadedmetadata = () => {
+      div.querySelector('.player__time_duration').innerHTML = formatTime(audio.duration);};
+    
+
+      // change timeline 
+    const timeline = div.querySelector(".player__progress");
+    timeline.addEventListener("click", e => {
+      const timelineWidth = window.getComputedStyle(timeline).width;
+      const timeToSeek = e.offsetX / parseInt(timelineWidth) * audio.duration;
+      audio.currentTime = timeToSeek;
+      div.querySelector('.player__time_current').textContent = formatTime(audio.currentTime);
+      div.querySelector('.player__progressbar').style.width = `${(audio.currentTime / audio.duration) * 100}%`;
+  }, false);
   }
 }
 
@@ -87,17 +176,19 @@ const buildVictorinePage = () => {
         </nav>
       </div>
     </header>
-    <main>
+    <main class="main">
       <section class="game__fied">
         <div class="game__wrapper">
           <div class="question">
+            <div class="question__title">
+              <p>Кто это?</p>
+              <p class="question__name">???</p>
+            </div>
             <div class="question__img">
               <img>
             </div>
             <div class="question__info">
-              <p class="question__name">
-              </p>
-              <audio class="question__audio"></audio>
+              <audio class="player__audio"></audio>
             </div>
           </div>
           <div class="answers">
@@ -110,18 +201,8 @@ const buildVictorinePage = () => {
           </div>
         </div>
         <div class="item">
-            <div class="item__main">
-              <div class="item__info">
-                <p class="item__name">
-                </p>
-                <audio class="item__audio"></audio>
-              </div>
-              <div class="item__img">
-                <img>
-              </div>
-            </div>
-            <div class="info__text"></div>
-          </div>
+          Прослушайте запись и выберете птицу
+        </div>
       </section>
       <button class="button button_next">Далее</button>
     </main>
@@ -165,12 +246,6 @@ const setQuestion = () => {
 
   currentAnswer = getRandomInt(allQuestion.length);
 
-  // let [avatar, name, text, id] = [data[number - 1].avatar, data[number - 1].name, data[number - 1].text, data[number - 1].id];
-
-  // new Testimonial(avatar, name, text, id, popUpItem).render();
-
-  // console.log(birdsData[currentQuestion][currentAnswer].audio);
-
   new Question(birdsData[currentQuestion], birdsData[currentQuestion][currentAnswer].audio, gameWrapper).render();
 };
 
@@ -182,23 +257,51 @@ const checkAnswer = (event) => {
   if (event.target.closest('.answers__item') && event.target.innerHTML === birdsData[currentQuestion][currentAnswer].name) {
     console.log(`Поздравляю, ${event.target.innerHTML} правильный ответ`);
     event.target.classList.add('right');
-    document.querySelector('.button_next').classList.add('enable');
+    const buttonNext = document.querySelector('.button_next');
+    buttonNext.classList.add('enable');
+    buttonNext.addEventListener('click', changeQuestion);
   }
 };
 
-const changeItemBlock = () => {
-  const item = `
-  <div class="item__main">
-    <div class="item__info">
-      <p class="item__name">
-      </p>
-      <audio class="item__audio"></audio>
-    </div>
-    <div class="item__img">
-      <img>
-    </div>
-  </div>
-  <div class="info__text"></div>`;
+const playAudio = async (event, audio, div) => {
+  
+  if (event.target.classList.contains('control__switcher_pause')) {
+  await audio.pause();
+  event.target.classList.remove('control__switcher_pause');
+  } else {
+    await audio.play();
+    event.target.classList.add('control__switcher_pause');
+    audio.addEventListener('timeupdate', event => {
+      updateProgress(event, audio, div);
+    });
+  }
+};
+
+const updateProgress = async (event, audio, div) => {
+  let progress = await div.querySelector('.player__progressbar');
+  let currentTime = await div.querySelector('.player__time_current');
+  let current = event.target.currentTime;
+  let percent = (current / event.target.duration) * 100;
+  progress.style.width = percent + '%';
+  
+  currentTime.textContent = formatTime(current);
+
+  if (current === audio.duration) {
+    await audio.pause();
+    div.querySelector('.control__switcher').classList.remove('control__switcher_pause');
+  }
+};
+
+const formatTime = time => {
+  var min = Math.floor(time / 60);
+  var sec = Math.floor(time % 60);
+  return min + ':' + ((sec<10) ? ('0' + sec) : sec);
+};
+
+const changeQuestion = () => {
+  currentQuestion += 1;
+  document.querySelector('.item').innerHTML = `Прослушайте запись и выберете птицу`;
+  setQuestion();
 };
 
 buildVictorinePage();
