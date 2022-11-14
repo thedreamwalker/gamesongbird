@@ -3,7 +3,7 @@ import birdsData from './birds';
 let allQuestion = [];
 let currentQuestion = 0;
 let currentAnswer = 0;
-let audioQuestion;
+let score = 0;
 
 class Question {
   constructor(array, audio, parent) {
@@ -159,6 +159,8 @@ class Player {
 }
 
 const buildVictorinePage = () => {
+  currentQuestion = 0;
+  score = 0;
   const body = document.querySelector('body');
 
   const layout = `
@@ -172,8 +174,10 @@ const buildVictorinePage = () => {
           <ul>
             <li>Главная страница</li>
             <li>Викторина</li>
+            <li>Галерея</li>
           </ul>
         </nav>
+        <div class="header__score">Счет: <span>${score}</span></div>
       </div>
     </header>
     <main class="main">
@@ -217,6 +221,46 @@ const buildVictorinePage = () => {
   setQuestion();
 };
 
+const buildResultePage = () => {
+  let description;
+  if (score >= 30) {
+    description = `Вот это результат, так вообще возможно?`;
+  } else if (score > 20) {
+    description = `Отличный результат, в птицах ты разбираешься!`;
+  } else {
+    description = `Неплохо, но ты точно можешь лучше :)`;
+  }
+
+  const resulte = document.createElement('section');
+  resulte.classList.add('game__resulte');
+
+  resulte.innerHTML = `
+  <h2>Поздравляем!</h2>
+    <h3>Ваш счет: ${score}</h3>
+    <p>${description}</p>
+  `;
+
+  const buttons = document.createElement('div');
+  buttons.classList.add('game__buttons');
+  resulte.append(buttons);
+
+
+  const buttonMain = document.createElement('button');
+  buttonMain.classList.add('button', 'button_next');
+  buttonMain.innerHTML = 'На главную';
+  //buttonMain.addEventListener('click', buildMainPage);
+  buttons.append(buttonMain);
+
+  const buttonVictorine = document.createElement('button');
+  buttonVictorine.classList.add('button', 'button_next');
+  buttonVictorine.innerHTML = 'Начать заново';
+  buttonVictorine.addEventListener('click', buildVictorinePage);
+  buttons.append(buttonVictorine);
+
+  document.querySelector('.main').innerHTML = '';
+  document.querySelector('.main').append(resulte);
+};
+
 const setGame = () => {
   const array = [];
 
@@ -252,11 +296,21 @@ const setQuestion = () => {
 const checkAnswer = (event) => {
   if (event.target.closest('.answers__item')) {
     new Item(event.target.innerHTML, birdsData[currentQuestion]).render();
+
+    if (event.target.innerHTML !== birdsData[currentQuestion][currentAnswer].name && score > 0 && document.querySelector('.question__name').innerHTML === '***') {
+      score -= 1;
+      document.querySelector('.header__score span').innerHTML = score;
+    }
   }
 
-  if (event.target.closest('.answers__item') && event.target.innerHTML === birdsData[currentQuestion][currentAnswer].name) {
+  if (event.target.closest('.answers__item') && event.target.innerHTML === birdsData[currentQuestion][currentAnswer].name && document.querySelector('.question__name').innerHTML === '***') {
+    document.querySelector('.question__name').innerHTML = `${birdsData[currentQuestion][currentAnswer].name} [${birdsData[currentQuestion][currentAnswer].species}]`;
+    document.querySelector('.question__img').innerHTML = `<img src="${birdsData[currentQuestion][currentAnswer].image}">`;
     console.log(`Поздравляю, ${event.target.innerHTML} правильный ответ`);
     event.target.classList.add('right');
+    score += 5;
+    document.querySelector('.header__score span').innerHTML = score;
+
     const buttonNext = document.querySelector('.button_next');
     buttonNext.classList.add('enable');
     buttonNext.addEventListener('click', changeQuestion);
@@ -299,9 +353,16 @@ const formatTime = time => {
 };
 
 const changeQuestion = () => {
-  currentQuestion += 1;
-  document.querySelector('.item').innerHTML = `Прослушайте запись и выберете птицу`;
-  setQuestion();
+  console.log(currentQuestion);
+  console.log(allQuestion.length);
+
+  if (currentQuestion === (allQuestion.length - 1)) {
+    buildResultePage();
+  } else {
+    currentQuestion += 1;
+    document.querySelector('.item').innerHTML = `Прослушайте запись и выберете птицу`;
+    setQuestion();
+  }
 };
 
 buildVictorinePage();
