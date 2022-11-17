@@ -47,32 +47,41 @@ class Question {
 }
 
 class Item {
-  constructor(selected, array) {
-    this.array = array;
+  constructor(selected, array, parent) {
     this.selected = selected;
+    this.array = array;
+    this.parent = parent;
   }
 
-  async render() {
-    const item = document.querySelector('.item');
+  render() {
     this.array.forEach((bird) => {
       if (bird.name === this.selected) {
-        item.innerHTML = `
-        <div class="item__main">
-          <div class="item__info">
-            <p class="item__name">${bird.name} | ${bird.species}
-            </p>
-          </div>
-        <div class="item__img">
-          <img src="${bird.image}">
-        </div>
-      </div>
-      <div class="item__text"><p>${bird.description}</p></div>`;
+        this.parent.innerHTML = '';
+        const main = document.createElement('div');
+        main.classList.add('item__main');
+        main.innerHTML = `
+          <div class="item__img">
+            <img src="${bird.image}">
+          </div>`;
 
+        const text = document.createElement('div');
+        text.classList.add('item__text');
+        text.innerHTML = `<p>${bird.description}</p>`;
+
+        this.parent.append(main);
+        this.parent.append(text);
+
+      const info = document.createElement('div');
+      info.classList.add('item__info');
+      info.innerHTML = `<p class="item__name">${bird.name} | ${bird.species}</p>`;
+      
         const player = document.createElement('div');
         player.classList.add('player');
 
         new Player(bird.audio, player).render();
-        document.querySelector('.item__info').append(player);
+        info.append(player);
+
+        main.prepend(info);
       }
     });
   }
@@ -177,6 +186,9 @@ function buildVictorinePage () {
   main.classList.add('main');
   main.innerHTML = `
   <section class="game__fied">
+  <div class="stage">
+      <ul class="stage__list"></ul>
+    </div>
     <div class="game__wrapper">
       <div class="question">
         <div class="question__title">
@@ -203,9 +215,16 @@ function buildVictorinePage () {
       Прослушайте запись и выберете птицу
     </div>
   </section>
-  <button class="button button_next">Далее</button>`;
+  <button class="button button_next disabled">Далее</button>`;
 
   container.append(main);
+
+  
+
+  for (let i = 0; i < birdsData.length; i++) {
+    console.log('олллло');
+    document.querySelector('.stage__list').innerHTML += `<li class="stage__item">${i+1}</li>`;
+  }
 
   buildFooter(container);
 
@@ -241,7 +260,7 @@ const buildResultePage = () => {
   const buttonMain = document.createElement('button');
   buttonMain.classList.add('button', 'button_next');
   buttonMain.innerHTML = 'На главную';
-  // buttonMain.addEventListener('click', buildMainPage);
+  buttonMain.addEventListener('click', buildMainPage);
   buttons.append(buttonMain);
 
   const buttonVictorine = document.createElement('button');
@@ -275,6 +294,16 @@ const setGame = () => {
 };
 
 const setQuestion = () => {
+  const stages = document.querySelectorAll('.stage__item');
+  stages.forEach(stage => {
+    stage.classList.remove('active');
+  });
+  stages[currentQuestion].classList.add('active');
+
+  const buttonNext = document.querySelector('.button_next');
+  buttonNext.classList.add('disabled');
+  buttonNext.removeEventListener('click', changeQuestion);
+
   const gameWrapper = document.querySelector('.game__wrapper');
   gameWrapper.innerHTML = '';
   function getRandomInt(max) {
@@ -288,7 +317,7 @@ const setQuestion = () => {
 
 const checkAnswer = (event) => {
   if (event.target.closest('.answers__item')) {
-    new Item(event.target.innerHTML, birdsData[currentQuestion]).render();
+    new Item(event.target.innerHTML, birdsData[currentQuestion], document.querySelector('.item')).render();
 
     if (event.target.innerHTML !== birdsData[currentQuestion][currentAnswer].name && score > 0 && document.querySelector('.question__name').innerHTML === '***') {
       score -= 1;
@@ -305,7 +334,7 @@ const checkAnswer = (event) => {
     document.querySelector('.header__score span').innerHTML = score;
 
     const buttonNext = document.querySelector('.button_next');
-    buttonNext.classList.add('enable');
+    buttonNext.classList.remove('disabled');
     buttonNext.addEventListener('click', changeQuestion);
   }
 };
@@ -355,4 +384,4 @@ const changeQuestion = () => {
   }
 };
 
-export {buildVictorinePage};
+export {buildVictorinePage, Item};

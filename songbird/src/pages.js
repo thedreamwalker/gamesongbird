@@ -1,4 +1,5 @@
-import { buildVictorinePage } from './songbird';
+import { buildVictorinePage, Item } from './songbird';
+import birdsData from './birds';
 const body = document.querySelector('body');
 
 class LinkHeader {
@@ -17,14 +18,16 @@ class LinkHeader {
     link.innerHTML = `${this.text}`;
 
     if (this.page !== this.link) {
-      console.log(this.page);
-      console.log(this.link);
       if (this.link === 'main') {
         link.addEventListener('click', buildMainPage);
       }
 
       if (this.link === 'victorine') {
         link.addEventListener('click', buildVictorinePage);
+      }
+
+      if (this.link === 'gallery') {
+        link.addEventListener('click', buildGalleryPage);
       }
       
     } else {
@@ -55,7 +58,7 @@ const buildHeader = (parent, page, score) => {
 
   new LinkHeader(ul, page, 'main', 'Главная').render();
   new LinkHeader(ul, page, 'victorine', 'Викторина').render();
-  new LinkHeader(ul, page, 'galery', 'Галерея').render();
+  new LinkHeader(ul, page, 'gallery', 'Галерея').render();
 
   if (score === 0 || score > 0) {
     const scoreContainer = document.createElement('div');
@@ -109,6 +112,39 @@ const buildMainPage = () => {
   button.innerHTML = 'Начать игру';
   button.addEventListener('click', buildVictorinePage);
   section.append(button);
+
+  container.append(main);
+
+  buildFooter(container);
+};
+
+/* BUILD GALLERY */
+
+const buildGalleryPage = () => {
+
+  body.innerHTML = '';
+
+  const container = document.createElement('div');
+  container.classList.add('container');
+  body.append(container);
+
+  buildHeader(container, 'gallery');
+
+  const main = document.createElement('main');
+  main.classList.add('main');
+  const section = document.createElement('section');
+  section.classList.add('main__gallery');
+  main.append(section);
+
+  for (let i = 0; i < birdsData.length; i++) {
+    for (let j = 0; j < birdsData[i].length; j++) {
+      console.log(birdsData[i][j].name);
+      const div = document.createElement('div');
+      section.append(div);
+      div.classList.add('gallery__item');
+      new Item(birdsData[i][j].name, birdsData[i], div).render();
+    }
+  }
 
   container.append(main);
 
