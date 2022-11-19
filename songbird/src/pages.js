@@ -1,6 +1,8 @@
 import { buildVictorinePage, Item } from './songbird';
 import birdsData from './birds';
+
 const body = document.querySelector('body');
+let theme = 'light';
 
 class LinkHeader {
   constructor(parent, page, link, text) {
@@ -29,7 +31,6 @@ class LinkHeader {
       if (this.link === 'gallery') {
         link.addEventListener('click', buildGalleryPage);
       }
-      
     } else {
       link.classList.add('header__link', 'active');
     }
@@ -40,6 +41,16 @@ class LinkHeader {
 }
 
 /* HEADER */
+
+const changeTheme = () => {
+  if (body.classList.contains('theme_dark')) {
+    body.classList.remove('theme_dark');
+    theme = 'light';
+  } else {
+    body.classList.add('theme_dark');
+    theme = 'dark';
+  }
+};
 
 const buildHeader = (parent, page, score) => {
   const header = document.createElement('header');
@@ -67,6 +78,12 @@ const buildHeader = (parent, page, score) => {
     menu.append(scoreContainer);
   }
 
+  const theme = document.createElement('button');
+  menu.append(theme);
+  theme.classList.add('header__theme');
+
+  theme.addEventListener('click', changeTheme);
+
   header.append(menu);
   parent.append(header);
 };
@@ -87,7 +104,6 @@ const buildFooter = (parent) => {
 /* BUILD MAIN */
 
 const buildMainPage = () => {
-
   body.innerHTML = '';
 
   const container = document.createElement('div');
@@ -104,7 +120,7 @@ const buildMainPage = () => {
 
   const img = document.createElement('div');
   img.classList.add('main__img');
-  img.innerHTML = `<img src="../src/assets/img/deafaltbird.jpg">`;
+  img.innerHTML = '<img src="../src/assets/img/deafaltbird.png">';
   section.append(img);
 
   const button = document.createElement('button');
@@ -121,7 +137,6 @@ const buildMainPage = () => {
 /* BUILD GALLERY */
 
 const buildGalleryPage = () => {
-
   body.innerHTML = '';
 
   const container = document.createElement('div');
@@ -151,8 +166,29 @@ const buildGalleryPage = () => {
   buildFooter(container);
 };
 
+const setTheme = (color) => {
+  if (color === 'dark') {
+    body.classList.add('theme_dark');
+  }
+};
+
+
+
+function setLocalStorage() {
+  localStorage.setItem('theme', theme);
+}
+
+function getLocalStorage() {
+  if (localStorage.getItem('theme')) {
+    theme = localStorage.getItem('theme');
+    setTheme(theme);
+  }
+}
 
 
 buildMainPage();
 
-export {buildHeader, buildFooter, buildMainPage};
+window.addEventListener('beforeunload', setLocalStorage);
+window.addEventListener('load', getLocalStorage);
+
+export { buildHeader, buildFooter, buildMainPage };

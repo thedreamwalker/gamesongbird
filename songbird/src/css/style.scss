@@ -17,7 +17,9 @@
 :root {
 --font-size: 26px;
 --color-section: rgba(255, 255, 255, 0.5);
+--dark-color-section: rgba(0, 0, 0, 0.5);
 --color-text: #474343;
+--dark-color-text: #fff;
 --color-accent: rgb(243, 163, 54);
 }
 
@@ -34,6 +36,11 @@
 
 * {
   box-sizing: border-box;
+}
+
+p {
+  letter-spacing: 0.2px;
+  line-height: 1.2rem;
 }
 
 body {
@@ -53,6 +60,59 @@ body {
   hsl(285deg 30% 92%) 100%
 );
   font-family: 'Merriweather', serif;
+
+  &.theme_dark {
+    background-image: linear-gradient(
+    125deg,
+    hsl(40deg 6% 10%) 0%,
+    hsl(34deg 6% 14%) 15%,
+    hsl(30deg 6% 18%) 22%,
+    hsl(25deg 6% 22%) 27%,
+    hsl(29deg 7% 27%) 32%,
+    hsl(56deg 6% 33%) 36%,
+    hsl(114deg 5% 40%) 40%,
+    hsl(164deg 9% 46%) 45%,
+    hsl(156deg 9% 51%) 50%,
+    hsl(108deg 7% 55%) 57%,
+    hsl(59deg 8% 57%) 67%,
+    hsl(33deg 15% 63%) 98%
+  );
+  color: var(--dark-color-text);
+
+
+  .header__logo {
+    filter: invert(99%) sepia(100%) saturate(2%) hue-rotate(280deg) brightness(109%) contrast(101%);
+  }
+
+  .header__link.active {
+    color: #fff;
+  }
+
+  .header__theme {
+    background-image: url(../assets/svg/bright-light.svg);
+    filter: invert(99%) sepia(100%) saturate(2%) hue-rotate(280deg) brightness(109%) contrast(101%);
+  }
+
+  .button {
+    color: var(--dark-color-text);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    &.button_next.disabled {
+      background-color: var(--color-text);
+    }
+  }
+
+  .answers__item {
+    background-color: var(--color-text);
+  }
+
+  .item, 
+  .game__resulte,
+  .gallery__item {
+    background-color: var(--dark-color-section);
+  }
+
+  }
 }
 
 ul {
@@ -115,7 +175,7 @@ p {
 }
 
 .header__logo img {
-  width: 60px;
+  width: 50px;
 
   @media (max-width: 639.98px) {
     width: 40px;
@@ -124,6 +184,8 @@ p {
 
 .header__menu {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 20px;
   width: 70%;
 
@@ -164,6 +226,16 @@ p {
   text-align: center;
 }
 
+.header__theme {
+  width: 35px;
+  height: 35px;
+  margin-left: auto;
+  background-color: transparent;
+  background-image: url(../assets/svg/light-bulb-off.svg);
+  border: none;
+  cursor: pointer;
+}
+
 .main {
   width: 100%;
 }
@@ -173,6 +245,14 @@ p {
   flex-direction: column;
   align-items: center;
   gap: 30px;
+}
+
+.main__img {
+
+  img {
+    width: 100%;
+    object-fit: contain;
+  }
 }
 
 .button_start {
@@ -209,6 +289,11 @@ p {
   border: 1px solid var(--color-accent);
   border-radius: 50%;
   transition: .5s;
+
+  @media (max-width: 409.98px) {
+    width: 30px;
+    height: 30px;
+  }
   
   &.active {
     background-color: var(--color-accent);
@@ -288,6 +373,10 @@ h3 {
   align-self: normal;
   gap: 10px;
   margin-bottom: 20px;
+
+  @media (max-width: 409.98px) {
+    grid-template-columns: 1fr 1fr;
+  }
 
 }
 

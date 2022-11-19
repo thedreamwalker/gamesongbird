@@ -1,5 +1,5 @@
 import birdsData from './birds';
-import {buildHeader, buildFooter, buildMainPage} from './pages';
+import { buildHeader, buildFooter, buildMainPage } from './pages';
 
 const body = document.querySelector('body');
 let allQuestion = [];
@@ -24,7 +24,7 @@ class Question {
       <p class="question__name">***</p>
     </div>
     <div class="question__img">
-          <img src="../src/assets/img/deafaltbird.jpg">
+          <img src="../src/assets/img/deafaltbird.png">
     </div>`;
 
     this.parent.append(question);
@@ -54,7 +54,7 @@ class Item {
   }
 
   render() {
-    this.array.forEach((bird) => {
+    this.array.forEach(async (bird) => {
       if (bird.name === this.selected) {
         this.parent.innerHTML = '';
         const main = document.createElement('div');
@@ -66,15 +66,15 @@ class Item {
 
         const text = document.createElement('div');
         text.classList.add('item__text');
-        text.innerHTML = `<p>${bird.description}</p>`;
+        text.innerHTML = await `<p>${bird.description}</p>`;
 
         this.parent.append(main);
         this.parent.append(text);
 
-      const info = document.createElement('div');
-      info.classList.add('item__info');
-      info.innerHTML = `<p class="item__name">${bird.name} | ${bird.species}</p>`;
-      
+        const info = document.createElement('div');
+        info.classList.add('item__info');
+        info.innerHTML = `<h2 class="item__name">${bird.name} | ${bird.species}</h2>`;
+
         const player = document.createElement('div');
         player.classList.add('player');
 
@@ -171,7 +171,7 @@ class Player {
 
 /* BUILD VICTORINE */
 
-function buildVictorinePage () {
+function buildVictorinePage() {
   currentQuestion = 0;
   score = 0;
 
@@ -219,11 +219,8 @@ function buildVictorinePage () {
 
   container.append(main);
 
-  
-
   for (let i = 0; i < birdsData.length; i++) {
-    console.log('олллло');
-    document.querySelector('.stage__list').innerHTML += `<li class="stage__item">${i+1}</li>`;
+    document.querySelector('.stage__list').innerHTML += `<li class="stage__item">${i + 1}</li>`;
   }
 
   buildFooter(container);
@@ -295,7 +292,7 @@ const setGame = () => {
 
 const setQuestion = () => {
   const stages = document.querySelectorAll('.stage__item');
-  stages.forEach(stage => {
+  stages.forEach((stage) => {
     stage.classList.remove('active');
   });
   stages[currentQuestion].classList.add('active');
@@ -374,7 +371,6 @@ const formatTime = (time) => {
 };
 
 const changeQuestion = () => {
-
   if (currentQuestion === (allQuestion.length - 1)) {
     buildResultePage();
   } else {
@@ -384,4 +380,4 @@ const changeQuestion = () => {
   }
 };
 
-export {buildVictorinePage, Item};
+export { buildVictorinePage, Item };
