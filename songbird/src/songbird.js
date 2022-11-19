@@ -326,10 +326,11 @@ const checkAnswer = (event) => {
   if (event.target.closest('.answers__item')) {
     new Item(event.target.innerHTML, birdsData[currentQuestion], document.querySelector('.item')).render();
 
-    if (event.target.innerHTML !== birdsData[currentQuestion][currentAnswer].name) {
+    if (event.target.innerHTML !== birdsData[currentQuestion][currentAnswer].name && document.querySelector('.question__name').innerHTML === '***') {
       if (!event.target.classList.contains('wrong')) {
         audioWrong.play();
       }
+      
       event.target.closest('.answers__item').classList.add('wrong');
     }
 
