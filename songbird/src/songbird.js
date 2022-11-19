@@ -6,6 +6,10 @@ let allQuestion = [];
 let currentQuestion = 0;
 let currentAnswer = 0;
 let score = 0;
+let points = 5;
+const audioWrong = new Audio('../src/assets/wrong.mp3');
+const audioRight = new Audio('../src/assets/right.mp3');
+let currentAudio;
 
 class Question {
   constructor(array, audio, parent) {
@@ -38,7 +42,7 @@ class Question {
     this.array.forEach((answer) => {
       const button = document.createElement('button');
       button.classList.add('button', 'answers__item');
-      button.innerHTML = answer.name;
+      button.innerHTML = `${answer.name}`;
       answers.append(button);
     });
 
@@ -95,6 +99,10 @@ class Player {
 
   async render(question) {
     const audio = await new Audio(this.url);
+    if (this.parent.classList.contains('question')) {
+      currentAudio = audio;
+    }
+    
     audio.volume = 0.75;
     this.parent.append(audio);
 
@@ -174,6 +182,7 @@ class Player {
 function buildVictorinePage() {
   currentQuestion = 0;
   score = 0;
+  points = 5;
 
   body.innerHTML = '';
   const container = document.createElement('div');
@@ -313,11 +322,19 @@ const setQuestion = () => {
 };
 
 const checkAnswer = (event) => {
+
   if (event.target.closest('.answers__item')) {
     new Item(event.target.innerHTML, birdsData[currentQuestion], document.querySelector('.item')).render();
 
-    if (event.target.innerHTML !== birdsData[currentQuestion][currentAnswer].name && score > 0 && document.querySelector('.question__name').innerHTML === '***') {
-      score -= 1;
+    if (event.target.innerHTML !== birdsData[currentQuestion][currentAnswer].name) {
+      if (!event.target.classList.contains('wrong')) {
+        audioWrong.play();
+      }
+      event.target.closest('.answers__item').classList.add('wrong');
+    }
+
+    if (event.target.innerHTML !== birdsData[currentQuestion][currentAnswer].name && points > 0 && document.querySelector('.question__name').innerHTML === '***') {
+      points -= 1;
       document.querySelector('.header__score span').innerHTML = score;
     }
   }
@@ -325,14 +342,18 @@ const checkAnswer = (event) => {
   if (event.target.closest('.answers__item') && event.target.innerHTML === birdsData[currentQuestion][currentAnswer].name && document.querySelector('.question__name').innerHTML === '***') {
     document.querySelector('.question__name').innerHTML = `${birdsData[currentQuestion][currentAnswer].name} [${birdsData[currentQuestion][currentAnswer].species}]`;
     document.querySelector('.question__img').innerHTML = `<img src="${birdsData[currentQuestion][currentAnswer].image}">`;
-    console.log(`Поздравляю, ${event.target.innerHTML} правильный ответ`);
+    audioRight.play();
     event.target.classList.add('right');
-    score += 5;
+    score += points;
     document.querySelector('.header__score span').innerHTML = score;
+
+    currentAudio.pause();
 
     const buttonNext = document.querySelector('.button_next');
     buttonNext.classList.remove('disabled');
     buttonNext.addEventListener('click', changeQuestion);
+
+    event.target.closest('.answers__item').classList.add('right');
   }
 };
 
@@ -375,6 +396,7 @@ const changeQuestion = () => {
     buildResultePage();
   } else {
     currentQuestion += 1;
+    points = 5;
     document.querySelector('.item').innerHTML = 'Прослушайте запись и выберете птицу';
     setQuestion();
   }

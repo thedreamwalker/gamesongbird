@@ -381,17 +381,36 @@ h3 {
 }
 
 .answers__item {
+  position: relative;
+  padding-left: 15px;
   background-color: transparent;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 32%;
+    left: 10px;
+    width: 12px;
+    height: 12px;
+    background-color: var(--color-accent);
+    border-radius: 50%;
+  }
   
   &:hover {
     background-color: #fff;
-    border: none;
+    border: 1px solid transparent;
   }
 
   &.right {
-    background-color: #fff;
-    color: var(--color-accent);
-    border: none;
+    &::before {
+      background-color: rgb(31 255 48);
+    }
+  }
+
+  &.wrong {
+    &::before {
+      background-color: rgb(255, 0, 0);
+    }
   }
 }
 
