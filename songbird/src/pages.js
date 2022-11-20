@@ -153,7 +153,6 @@ const buildGalleryPage = () => {
 
   for (let i = 0; i < birdsData.length; i++) {
     for (let j = 0; j < birdsData[i].length; j++) {
-      console.log(birdsData[i][j].name);
       const div = document.createElement('div');
       section.append(div);
       div.classList.add('gallery__item');
@@ -185,8 +184,21 @@ function getLocalStorage() {
   }
 }
 
+const setHeadData = (scr) => {
+  const headTitle = document.querySelector('head');
+  const favicon = document.createElement('link');
+  favicon.setAttribute('rel','shortcut icon');
+  favicon.setAttribute('href', scr);
+  headTitle.appendChild(favicon);
+
+  const title = document.querySelector('title');
+  title.innerHTML = 'songbird game';
+};
+
+setHeadData('../src/assets/fav.ico');
 
 buildMainPage();
+console.log('Все требования тз выполнены, в качестве дополнительного функционала реализована галерея и смена темы с сохранением в ');
 
 window.addEventListener('beforeunload', setLocalStorage);
 window.addEventListener('load', getLocalStorage);

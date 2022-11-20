@@ -102,6 +102,13 @@ body {
     }
   }
 
+  .button_start {
+  
+    &:hover {
+      background-color: var(--dark-color-section);
+    }
+  }
+
   .answers__item {
     background-color: var(--color-text);
   }
