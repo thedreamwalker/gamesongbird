@@ -348,6 +348,10 @@ const checkAnswer = (event) => {
     score += points;
     document.querySelector('.header__score span').innerHTML = score;
 
+    if (document.querySelector('.control__switcher').classList.contains('control__switcher_pause')) {
+      document.querySelector('.control__switcher').classList.remove('control__switcher_pause');
+    }
+
     currentAudio.pause();
 
     const buttonNext = document.querySelector('.button_next');
