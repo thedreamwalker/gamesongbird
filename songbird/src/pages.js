@@ -96,7 +96,7 @@ const buildFooter = (parent) => {
   footer.innerHTML = `
   <div class="footer__git"><a href="https://github.com/thedreamwalker">github</a></div>
   <p>© 2022</p>
-  <div class="footer__rss"><img src="../src/assets/svg/rs_school_js.svg"></div>`;
+  <div class="footer__rss"><a href="https://rs.school/js/"><img src="../src/assets/svg/rs_school_js.svg"></a></div>`;
 
   parent.append(footer);
 };
@@ -171,8 +171,6 @@ const setTheme = (color) => {
   }
 };
 
-
-
 function setLocalStorage() {
   localStorage.setItem('theme', theme);
 }
@@ -187,7 +185,7 @@ function getLocalStorage() {
 const setHeadData = (scr) => {
   const headTitle = document.querySelector('head');
   const favicon = document.createElement('link');
-  favicon.setAttribute('rel','shortcut icon');
+  favicon.setAttribute('rel', 'shortcut icon');
   favicon.setAttribute('href', scr);
   headTitle.appendChild(favicon);
 

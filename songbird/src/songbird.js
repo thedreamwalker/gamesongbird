@@ -102,7 +102,7 @@ class Player {
     if (this.parent.classList.contains('question')) {
       currentAudio = audio;
     }
-    
+
     audio.volume = 0.75;
     this.parent.append(audio);
 
@@ -322,7 +322,6 @@ const setQuestion = () => {
 };
 
 const checkAnswer = (event) => {
-
   if (event.target.closest('.answers__item')) {
     new Item(event.target.innerHTML, birdsData[currentQuestion], document.querySelector('.item')).render();
 
@@ -330,7 +329,7 @@ const checkAnswer = (event) => {
       if (!event.target.classList.contains('wrong')) {
         audioWrong.play();
       }
-      
+
       event.target.closest('.answers__item').classList.add('wrong');
     }
 
