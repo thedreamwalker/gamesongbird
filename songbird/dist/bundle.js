@@ -366,7 +366,7 @@ const buildFooter = parent => {
   footer.innerHTML = `
   <div class="footer__git"><a href="https://github.com/thedreamwalker">github</a></div>
   <p>© 2022</p>
-  <div class="footer__rss"><img src="../src/assets/svg/rs_school_js.svg"></div>`;
+  <div class="footer__rss"><a href="https://rs.school/js/"><img src="../src/assets/svg/rs_school_js.svg"></a></div>`;
   parent.append(footer);
 };
 
