@@ -196,7 +196,9 @@ const setHeadData = (scr) => {
 setHeadData('../src/assets/fav.ico');
 
 buildMainPage();
+
 console.log('Все требования тз выполнены, в качестве дополнительного функционала реализована галерея и смена темы с сохранением в local storage');
+
 
 window.addEventListener('beforeunload', setLocalStorage);
 window.addEventListener('load', getLocalStorage);
