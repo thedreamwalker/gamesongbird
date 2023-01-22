@@ -445,7 +445,7 @@ const setHeadData = scr => {
 };
 setHeadData('../src/assets/fav.ico');
 buildMainPage();
-console.log('Все требования тз выполнены, в качестве дополнительного функционала реализована галерея и смена темы с сохранением в local storage\n270/270');
+console.log('Все требования тз выполнены, в качестве дополнительного функционала реализована галерея и смена темы с сохранением в local storage');
 window.addEventListener('beforeunload', setLocalStorage);
 window.addEventListener('load', getLocalStorage);
 
@@ -521,7 +521,7 @@ class Item {
         this.parent.innerHTML = '';
         const main = document.createElement('div');
         main.classList.add('item__main');
-        main.innerHTML = `
+        main.innerHTML = await `
           <div class="item__img">
             <img src="${bird.image}">
           </div>`;

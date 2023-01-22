@@ -65,7 +65,7 @@ class Item {
         this.parent.innerHTML = '';
         const main = document.createElement('div');
         main.classList.add('item__main');
-        main.innerHTML = `
+        main.innerHTML = await `
           <div class="item__img">
             <img src="${bird.image}">
           </div>`;
