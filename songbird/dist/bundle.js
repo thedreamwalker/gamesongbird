@@ -474,7 +474,9 @@ let currentAnswer = 0;
 let score = 0;
 let points = 5;
 const audioWrong = new Audio('../src/assets/wrong.mp3');
+audioWrong.volume = 0.2;
 const audioRight = new Audio('../src/assets/right.mp3');
+audioRight.volume = 0.2;
 let currentAudio;
 class Question {
   constructor(array, audio, parent) {
